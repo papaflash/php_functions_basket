@@ -95,11 +95,11 @@ function AddItem (&$items, &$isItemsEmpty): void
     }
 }
 
-function DeleteItem (&$items, &$isItemsEmpty): bool
+function DeleteItem (&$items, &$isItemsEmpty): void
 {
     if($isItemsEmpty){
         echo "Ваш список покупок пуст, удалять не чего!" . PHP_EOL;
-        return false;
+        return;
     }
     // Проверить, есть ли товары в списке? Если нет, то сказать об этом и попросить ввести другую операцию
     echo 'Введение название товара для удаления из списка:' . PHP_EOL . '> ';
@@ -113,10 +113,8 @@ function DeleteItem (&$items, &$isItemsEmpty): bool
         ShowShoppingList($items, $isItemsEmpty);
     }else{
         echo "Товара с названием <" . $itemName . "> в списке нет!" . PHP_EOL;
-        return false;
     }
     SetIsItemsEmpty($items, $isItemsEmpty);
-    return true;
 }
 
 function SetIsItemsEmpty ($items, &$isItemsEmpty): void
