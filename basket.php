@@ -35,9 +35,6 @@ do {
         case OPERATION_PRINT:
             ShowShoppingList($items, $isItemsEmpty);
             break;
-        default:
-
-            break;
     }
 
     echo "\n ----- \n";
