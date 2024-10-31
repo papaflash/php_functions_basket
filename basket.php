@@ -13,7 +13,7 @@ $operations = [
 ];
 
 $items = [];
-
+//Флаг переменная, указывающая на пустой список
 $isItemsEmpty = false;
 
 do {
@@ -42,6 +42,7 @@ do {
 
 echo 'Программа завершена' . PHP_EOL;
 
+//Показать список покупок
 function ShowShoppingList ($items, $isItemsEmpty): void
 {
     if($isItemsEmpty) {
@@ -57,6 +58,7 @@ function ShowShoppingList ($items, $isItemsEmpty): void
     fgets(STDIN);
 }
 
+//Вывести стартового меню
 function ShowStartMenu ($items ,$operations, &$isItemsEmpty): string
 {
     // Проверить, есть ли товары в списке? Если нет, то не отображать пункт про удаление товаров
@@ -73,6 +75,7 @@ function ShowStartMenu ($items ,$operations, &$isItemsEmpty): string
     return trim(fgets(STDIN));
 }
 
+//Проверить введенное пользователем число для выбора операции
 function CheckOperationNumber ($operationNumber, $operations): bool
 {
     if(array_key_exists($operationNumber, $operations)){
@@ -84,6 +87,7 @@ function CheckOperationNumber ($operationNumber, $operations): bool
     return false;
 }
 
+//Добавить товар в список
 function AddItem (&$items, &$isItemsEmpty): void
 {
     echo "Введение название товара для добавления в список: \n> ";
@@ -95,6 +99,7 @@ function AddItem (&$items, &$isItemsEmpty): void
     }
 }
 
+//Удалить товара из списка
 function DeleteItem (&$items, &$isItemsEmpty): void
 {
     if($isItemsEmpty){
@@ -117,6 +122,7 @@ function DeleteItem (&$items, &$isItemsEmpty): void
     SetIsItemsEmpty($items, $isItemsEmpty);
 }
 
+//Установить флаг в true/false в зависимости от того пустой список или нет
 function SetIsItemsEmpty ($items, &$isItemsEmpty): void
 {
     if(count($items) === 0) {
