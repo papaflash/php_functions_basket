@@ -4,12 +4,16 @@ const OPERATION_EXIT = 0;
 const OPERATION_ADD = 1;
 const OPERATION_DELETE = 2;
 const OPERATION_PRINT = 3;
+const OPERATION_RENAME = 4;
+const OPERATION_ADD_QNT = 5;
 
 $operations = [
     OPERATION_EXIT => OPERATION_EXIT . '. Завершить программу.',
     OPERATION_ADD => OPERATION_ADD . '. Добавить товар в список покупок.',
     OPERATION_DELETE => OPERATION_DELETE . '. Удалить товар из списка покупок.',
     OPERATION_PRINT => OPERATION_PRINT . '. Отобразить список покупок.',
+    OPERATION_RENAME => OPERATION_RENAME . '. Изменить наименование',
+    OPERATION_ADD_QNT => OPERATION_ADD_QNT . '. Указать кол-во товара'
 ];
 
 $items = [];
@@ -35,6 +39,12 @@ do {
         case OPERATION_PRINT:
             ShowShoppingList($items, $isItemsEmpty);
             break;
+        case OPERATION_RENAME:
+             EditItemName($items, $isItemsEmpty);
+             break;
+        case OPERATION_ADD_QNT:
+             AddQuantity($items, $isItemsEmpty);
+             break;
     }
 
     echo "\n ----- \n";
@@ -50,8 +60,8 @@ function ShowShoppingList ($items, $isItemsEmpty): void
         return;
     }
     echo "Ваш список покупок: " . PHP_EOL;
-    foreach ($items as $item) {
-        echo "\t" . $item . PHP_EOL;
+    foreach ($items as $item => $value) {
+        echo "\t" . $item . " - " . $value . " шт." . PHP_EOL;
     }
     echo 'Всего ' . count($items) . ' позиций. '. PHP_EOL;
     echo 'Нажмите enter для продолжения';
@@ -93,7 +103,7 @@ function AddItem (&$items, &$isItemsEmpty): void
     echo "Введение название товара для добавления в список: \n> ";
     $itemName = trim(fgets(STDIN));
     if($itemName !== ""){
-        $items[] = $itemName;
+        $items[$itemName] = 1;
         SetIsItemsEmpty($items, $isItemsEmpty);
         ShowShoppingList($items, $isItemsEmpty);
     }
@@ -107,13 +117,11 @@ function DeleteItem (&$items, &$isItemsEmpty): void
         return;
     }
     // Проверить, есть ли товары в списке? Если нет, то сказать об этом и попросить ввести другую операцию
-    echo 'Введение название товара для удаления из списка:' . PHP_EOL . '> ';
+    echo 'Введите название товара для удаления из списка:' . PHP_EOL . '> ';
     $itemName = trim(fgets(STDIN));
 
-    if (in_array($itemName, $items, true) !== false) {
-        while (($key = array_search($itemName, $items, true)) !== false) {
-            unset($items[$key]);
-        }
+    if (array_key_exists($itemName, $items) !== false) {
+        unset($items[$itemName]);
         echo "\nТовар <" . $itemName ."> удален из списка" . PHP_EOL;
         ShowShoppingList($items, $isItemsEmpty);
     }else{
@@ -121,7 +129,45 @@ function DeleteItem (&$items, &$isItemsEmpty): void
     }
     SetIsItemsEmpty($items, $isItemsEmpty);
 }
-
+//Изменить имя товара
+function EditItemName (&$items, &$isItemsEmpty): void
+{
+    if(!$isItemsEmpty){
+        echo "\nВведите текущее название товара: ";
+        $currName = trim(fgets(STDIN));
+        if(array_key_exists($currName, $items) !== false) {
+            echo "\nВведите новое название товара: ";
+            $newName = trim(fgets(STDIN));
+            if($newName !== $currName && $newName !== ""){
+                $items[$newName] = $items[$currName];
+                unset($items[$currName]);
+                ShowShoppingList($items, $isItemsEmpty);
+            }
+        }else{
+            echo "Товара с названием <" . $currName . "> в списке нет!" . PHP_EOL;
+        }
+    }else{
+        echo "\nСписок пуст!" . PHP_EOL;
+    }
+}
+//Указать кол-во товара
+function AddQuantity (&$items, $isItemsEmpty): void
+{
+        if($isItemsEmpty){
+            echo "\nСписок пуст" . PHP_EOL;
+            return;
+        }
+        echo "\nУкажите название товара: ";
+        $name = trim(fgets(STDIN));
+        if($name !== ""){
+            echo "\nВведите кол-во товара: ";
+            $qnt = trim(fgets(STDIN));
+            if(is_numeric($qnt) && $qnt > 0){
+                $items[$name] = $qnt;
+                ShowShoppingList($items, $isItemsEmpty);
+            }
+        }
+}
 //Установить флаг в true/false в зависимости от того пустой список или нет
 function SetIsItemsEmpty ($items, &$isItemsEmpty): void
 {
